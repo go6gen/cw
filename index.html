@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Scanner Dashboard</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --bg-hover: #475569;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: #475569;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            filter: invert(1) brightness(2);
+        }
+
+        .title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.25rem;
+        }
+
+        .title p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            background: var(--bg-secondary);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .controls {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .filter-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 120px;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border-color);
+        }
+
+        .full-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .username {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+
+        .display-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-id {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: var(--bg-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge.online {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge.offline {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.online {
+            background: var(--accent-success);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+
+        .status-dot.offline {
+            background: var(--accent-danger);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+        }
+
+        .offline-note {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--accent-danger);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .offline-note p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .offline-note strong {
+            color: var(--accent-danger);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .class-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .description-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .description-section .info-label {
+            margin-bottom: 0.5rem;
+        }
+
+        .card-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent-success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .avatar-section {
+                flex-direction: row;
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .full-avatar {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .card-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-section">
+                <img src="icon.ico" alt="Logo" class="logo">
+                <div class="title">
+                    <h1>Roblox Scanner</h1>
+                    <p>Real-time user tracking dashboard</p>
+                </div>
+            </div>
+            <div class="stats" id="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="onlineUsers">0</div>
+                    <div class="stat-label">Online</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="lastScan">-</div>
+                    <div class="stat-label">Last Scan</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="controls">
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by username or user ID...">
+                <button id="clearSearch" class="filter-btn">Clear</button>
+            </div>
+            <div class="filters">
+                <span class="filter-label">Filter by class:</span>
+                <button class="filter-btn active" data-class="all">All</button>
+            </div>
+        </div>
+
+        <div class="cards-grid" id="cardsGrid">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading scan results...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span>✓</span>
+        <span id="toastMessage">URL copied to clipboard!</span>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://gekkefries.pythonanywhere.com';
+        const GET_RESULTS_URL = `${API_BASE_URL}/get_results`;
+        
+        let allUsers = [];
+        let filteredUsers = [];
+        let activeFilter = 'all';
+        let searchQuery = '';
+        let availableClasses = new Set(['all']);
+
+        const cardsGrid = document.getElementById('cardsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearch = document.getElementById('clearSearch');
+        const filtersContainer = document.querySelector('.filters');
+        const loading = document.getElementById('loading');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        const totalUsersEl = document.getElementById('totalUsers');
+        const onlineUsersEl = document.getElementById('onlineUsers');
+        const lastScanEl = document.getElementById('lastScan');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadResults();
+            setupEventListeners();
+            setInterval(loadResults, 30000);
+        });
+
+        function setupEventListeners() {
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                applyFilters();
+            });
+
+            clearSearch.addEventListener('click', () => {
+                searchInput.value = '';
+                searchQuery = '';
+                applyFilters();
+            });
+
+            filtersContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-btn')) {
+                    const filterButtons = filtersContainer.querySelectorAll('.filter-btn');
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    activeFilter = e.target.dataset.class;
+                    applyFilters();
+                }
+            });
+        }
+
+        async function loadResults() {
+            try {
+                loading.style.display = 'flex';
+                const response = await fetch(GET_RESULTS_URL, {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.users && data.users.length > 0) {
+                    allUsers = data.users;
+                    updateStats(data);
+                    updateAvailableClasses();
+                    applyFilters();
+                } else {
+                    showEmptyState('No scan results available yet');
+                }
+            } catch (error) {
+                console.error('Error loading results:', error);
+                showEmptyState('Failed to load scan results. Please try again.');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function updateStats(data) {
+            totalUsersEl.textContent = data.metadata?.total_users_scanned || allUsers.length;
+            
+            const onlineCount = allUsers.filter(user => user.server_found).length;
+            onlineUsersEl.textContent = onlineCount;
+            
+            if (data.metadata?.scan_completed) {
+                const scanTime = new Date(data.metadata.scan_completed);
+                lastScanEl.textContent = scanTime.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+        }
+
+        function updateAvailableClasses() {
+            const classes = new Set(['all']);
+            
+            allUsers.forEach(user => {
+                if (user.class && user.class.trim()) {
+                    classes.add(user.class);
+                }
+            });
+            
+            availableClasses = classes;
+            renderFilterButtons();
+        }
+
+        function renderFilterButtons() {
+            const filterLabel = filtersContainer.querySelector('.filter-label');
+            const allButton = filtersContainer.querySelector('.filter-btn[data-class="all"]');
+            
+            filtersContainer.innerHTML = '';
+            filtersContainer.appendChild(filterLabel);
+            
+            const allClasses = Array.from(availableClasses).sort((a, b) => {
+                if (a === 'all') return -1;
+                if (b === 'all') return 1;
+                return a.localeCompare(b);
+            });
+            
+            allClasses.forEach(className => {
+                const button = document.createElement('button');
+                button.className = 'filter-btn';
+                button.dataset.class = className;
+                button.textContent = className === 'all' ? 'All' : formatClassName(className);
+                
+                if (className === activeFilter) {
+                    button.classList.add('active');
+                }
+                
+                filtersContainer.appendChild(button);
+            });
+        }
+
+        function formatClassName(className) {
+            return className
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        }
+
+        function applyFilters() {
+            filteredUsers = allUsers.filter(user => {
+                if (activeFilter !== 'all' && user.class !== activeFilter) {
+                    return false;
+                }
+                
+                if (searchQuery) {
+                    const searchLower = searchQuery.toLowerCase();
+                    const matchesUsername = user.username?.toLowerCase().includes(searchLower);
+                    const matchesUserId = user.user_id?.toLowerCase().includes(searchLower);
+                    const matchesDisplayName = user.additional_info?.display_name?.toLowerCase().includes(searchLower);
+                    
+                    if (!matchesUsername && !matchesUserId && !matchesDisplayName) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            renderCards();
+        }
+
+        function renderCards() {
+            cardsGrid.innerHTML = '';
+            
+            if (filteredUsers.length === 0) {
+                showEmptyState('No users match your filters');
+                return;
+            }
+            
+            filteredUsers.forEach(user => {
+                const card = createUserCard(user);
+                cardsGrid.appendChild(card);
+            });
+        }
+
+        function createUserCard(user) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const isOnline = user.server_found;
+            const headshotUrl = user.avatar_urls?.headshot || 'https://via.placeholder.com/150';
+            const fullBodyUrl = user.avatar_urls?.full_body || 'https://via.placeholder.com/720';
+            const displayName = user.additional_info?.display_name || '';
+            const createdDate = user.additional_info?.created_date ? 
+                new Date(user.additional_info.created_date).toLocaleDateString() : 'Unknown';
+            const hasVerifiedBadge = user.additional_info?.has_verified_badge || false;
+            const scanMethod = user.scan_method || 'not_found';
+            
+            const offlineExplanation = getOfflineExplanation(scanMethod);
+            
+            const userClass = user.class || '';
+            const badgeColor = getClassBadgeColor(userClass);
+            
+            const gameUrl = user.direct_join_url || user.web_url || '';
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="avatar-section">
+                        <img src="${headshotUrl}" alt="${user.username}" class="avatar" onerror="this.src='https://via.placeholder.com/150'">
+                        <img src="${fullBodyUrl}" alt="Full avatar" class="full-avatar" onerror="this.style.display='none'">
+                    </div>
+                    <div class="user-info">
+                        <div class="username">
+                            ${user.username}
+                            ${hasVerifiedBadge ? '<span style="color: #10b981; margin-left: 4px;">✓</span>' : ''}
+                        </div>
+                        ${displayName ? `<div class="display-name">${displayName}</div>` : ''}
+                        <div class="user-id">${user.user_id}</div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="status-badge ${isOnline ? 'online' : 'offline'}">
+                        <div class="status-dot ${isOnline ? 'online' : 'offline'}"></div>
+                        ${isOnline ? 'In Game' : 'Not In Game'}
+                    </div>
+                    
+                    ${!isOnline ? `
+                        <div class="offline-note">
+                            <p><strong>Note:</strong> ${offlineExplanation}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Class</span>
+                            <span class="class-badge" style="${badgeColor}">${user.class}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Scan Method</span>
+                            <span class="info-value">${formatScanMethod(scanMethod)}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Account Created</span>
+                            <span class="info-value">${createdDate}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Banned</span>
+                            <span class="info-value">${user.additional_info?.is_banned ? 'Yes' : 'No'}</span>
+                        </div>
+                    </div>
+                    
+                    ${user.additional_info?.description ? `
+                        <div class="description-section">
+                            <div class="info-item">
+                                <span class="info-label">Description</span>
+                                <span class="info-value" style="font-size: 0.9rem; opacity: 0.9; line-height: 1.4;">
+                                    ${user.additional_info.description.substring(0, 120)}
+                                    ${user.additional_info.description.length > 120 ? '...' : ''}
+                                </span>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <div class="card-footer">
+                    <button class="btn btn-secondary" onclick="copyToClipboard('${gameUrl}')" ${!gameUrl ? 'disabled' : ''}>
+                        Copy URL
+                    </button>
+                    <button class="btn btn-primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl ? 'disabled' : ''}>
+                        Join Game
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function getClassBadgeColor(className) {
+            const lowerClass = className.toLowerCase();
+            
+            if (lowerClass.includes('enemy') && lowerClass.includes('clan')) {
+                return 'background: rgba(245, 158, 11, 0.15); color: #f59e0b;';
+            }
+            
+            if (lowerClass.includes('enemy') || lowerClass.includes('l7c')) {
+                return 'background: rgba(239, 68, 68, 0.15); color: #ef4444;';
+            }
+            
+            if (lowerClass.includes('ally') || lowerClass.includes('allied')) {
+                return 'background: rgba(16, 185, 129, 0.15); color: #10b981;';
+            }
+            
+            return 'background: rgba(59, 130, 246, 0.15); color: #3b82f6;';
+        }
+
+        function getOfflineExplanation(scanMethod) {
+            switch(scanMethod) {
+                case 'presence_api':
+                    return "User is not currently in the game according to Roblox's presence API.";
+                case 'server_scan':
+                    return "User was not found in any server scans. They may have just joined.";
+                case 'not_found':
+                    return "User was not found via presence API or server scan. They might not be in the game at all, or it may take up to 20 minutes for new player tokens to appear in Roblox's server listings.";
+                default:
+                    return "User was not found in the game. This could mean they're offline, in a different game, or their player token hasn't been updated yet.";
+            }
+        }
+
+        function formatScanMethod(method) {
+            const methodMap = {
+                'presence_api': 'Presence API',
+                'server_scan': 'Server Scan',
+                'not_found': 'Not Found'
+            };
+            return methodMap[method] || method;
+        }
+
+        function showEmptyState(message) {
+            cardsGrid.innerHTML = `
+                <div class="empty-state">
+                    <h3>${message}</h3>
+                    <p>Try adjusting your filters or wait for the next scan</p>
+                </div>
+            `;
+        }
+
+        function copyToClipboard(text) {
+            if (!text) return;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Game URL copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showToast('Failed to copy URL');
+            });
+        }
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        window.copyToClipboard = copyToClipboard;
+    </script>
+</body>
+</html>
