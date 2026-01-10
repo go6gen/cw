@@ -784,7 +784,6 @@
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
         const backButton = document.getElementById('backButton');
-        const othersButton = document.querySelector('.others-btn');
         const userIdInput = document.getElementById('userIdInput');
         const addUserBtn = document.getElementById('addUserBtn');
         const clearFormBtn = document.getElementById('clearFormBtn');
@@ -965,9 +964,10 @@
         }
 
         function updateStats(data) {
-            totalUsersEl.textContent = data.metadata?.total_users_scanned || allUsers.length;
+            const nonOthersUsers = allUsers.filter(user => user.class !== 'others');
+            totalUsersEl.textContent = nonOthersUsers.length;
             
-            const onlineCount = allUsers.filter(user => user.server_found).length;
+            const onlineCount = nonOthersUsers.filter(user => user.server_found).length;
             onlineUsersEl.textContent = onlineCount;
             
             if (data.metadata?.scan_completed) {
@@ -983,14 +983,10 @@
             const classes = new Set(['all']);
             
             allUsers.forEach(user => {
-                if (user.class && user.class.trim()) {
+                if (user.class && user.class.trim() && user.class !== 'others') {
                     classes.add(user.class);
                 }
             });
-            
-            if (!classes.has('others')) {
-                classes.add('others');
-            }
             
             availableClasses = classes;
             renderFilterButtons();
@@ -998,14 +994,11 @@
 
         function renderFilterButtons() {
             const filterLabel = filtersContainer.querySelector('.filter-label');
-            const allButton = filtersContainer.querySelector('.filter-btn[data-class="all"]');
-            const othersButton = filtersContainer.querySelector('.others-btn');
             
             filtersContainer.innerHTML = '';
             filtersContainer.appendChild(filterLabel);
             
             const allClasses = Array.from(availableClasses)
-                .filter(cls => cls !== 'others')
                 .sort((a, b) => {
                     if (a === 'all') return -1;
                     if (b === 'all') return 1;
@@ -1046,6 +1039,10 @@
 
         function applyFilters() {
             filteredUsers = allUsers.filter(user => {
+                if (user.class === 'others') {
+                    return false;
+                }
+                
                 if (activeFilter !== 'all' && user.class !== activeFilter) {
                     return false;
                 }
@@ -1221,7 +1218,7 @@
             const lowerClass = className.toLowerCase();
             
             if (lowerClass === 'others') {
-                return 'background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00); color: white; font-weight: bold;';
+                return 'background: rgba(59, 130, 246, 0.15); color: #3b82f6;';
             }
             
             if (lowerClass.includes('enemy') && lowerClass.includes('clan')) {
