@@ -22,6 +22,7 @@
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
             --radius: 12px;
             --transition: all 0.3s ease;
+            --rainbow-gradient: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff80, #00ffff, #0080ff, #8000ff, #ff0080, #ff0000);
         }
 
         * {
@@ -163,6 +164,7 @@
             cursor: pointer;
             transition: var(--transition);
             white-space: nowrap;
+            position: relative;
         }
 
         .filter-btn:hover {
@@ -174,6 +176,42 @@
             background: var(--accent-primary);
             border-color: var(--accent-primary);
             color: white;
+        }
+
+        .filter-btn.others-btn {
+            background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff80);
+            background-size: 400% 400%;
+            color: white;
+            border: none;
+            font-weight: 600;
+            animation: rainbowBorder 4s linear infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-btn.others-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--rainbow-gradient);
+            background-size: 400% 400%;
+            border-radius: calc(var(--radius) + 2px);
+            z-index: -1;
+            animation: rainbowBorder 4s linear infinite;
+            opacity: 0.7;
+        }
+
+        .filter-btn.others-btn.active::before {
+            opacity: 1;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes rainbowBorder {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
         }
 
         .cards-grid {
@@ -422,6 +460,38 @@
             transform: translateY(-2px);
         }
 
+        .btn-back {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-back:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+        }
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -451,6 +521,14 @@
             opacity: 1;
         }
 
+        .toast.error {
+            background: var(--accent-danger);
+        }
+
+        .toast.warning {
+            background: var(--accent-warning);
+        }
+
         .loading {
             display: flex;
             flex-direction: column;
@@ -468,6 +546,75 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 1rem;
+        }
+
+        .others-section {
+            display: none;
+        }
+
+        .others-section.active {
+            display: block;
+        }
+
+        .add-user-form {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .form-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .main-content {
+            display: block;
+        }
+
+        .main-content.hidden {
+            display: none;
         }
 
         @keyframes spin {
@@ -518,76 +665,129 @@
             .card-footer {
                 flex-direction: column;
             }
+            
+            .form-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo-section">
-                <img src="icon.ico" alt="Logo" class="logo">
-                <div class="title">
-                    <h1>Revoltz User Finder</h1>
-                    <p>Made By Gekkefres :]</p>
+        <div class="main-content" id="mainContent">
+            <header>
+                <div class="logo-section">
+                    <img src="icon.ico" alt="Logo" class="logo">
+                    <div class="title">
+                        <h1>Revoltz User Finder</h1>
+                        <p>Made By Gekkefres :]</p>
+                    </div>
                 </div>
-            </div>
-            <div class="stats" id="stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="totalUsers">0</div>
-                    <div class="stat-label">Total Users</div>
+                <div class="stats" id="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="onlineUsers">0</div>
+                        <div class="stat-label">Online</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="lastScan">-</div>
+                        <div class="stat-label">Last Scan</div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="onlineUsers">0</div>
-                    <div class="stat-label">Online</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="lastScan">-</div>
-                    <div class="stat-label">Last Scan</div>
-                </div>
-            </div>
-        </header>
+            </header>
 
-        <div class="controls">
-            <div class="search-bar">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search by username or user ID...">
-                <button id="clearSearch" class="filter-btn">Clear</button>
+            <div class="controls">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by username or user ID...">
+                    <button id="clearSearch" class="filter-btn">Clear</button>
+                </div>
+                <div class="filters">
+                    <span class="filter-label">Filter by class:</span>
+                    <button class="filter-btn active" data-class="all">All</button>
+                    <button class="filter-btn others-btn" data-class="others">Others</button>
+                </div>
             </div>
-            <div class="filters">
-                <span class="filter-label">Filter by class:</span>
-                <button class="filter-btn active" data-class="all">All</button>
+
+            <div class="cards-grid" id="cardsGrid">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Loading scan results...</p>
+                </div>
             </div>
         </div>
 
-        <div class="cards-grid" id="cardsGrid">
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Loading scan results...</p>
+        <div class="others-section" id="othersSection">
+            <button class="btn-back" id="backButton">
+                ← Back to Main
+            </button>
+            
+            <div class="add-user-form">
+                <h2 style="margin-bottom: 1rem; color: var(--text-primary);">Add User to Others</h2>
+                <div class="form-group">
+                    <label class="form-label" for="userIdInput">Roblox User ID</label>
+                    <input type="text" id="userIdInput" class="form-input" placeholder="Enter Roblox User ID (numbers only)" maxlength="20">
+                    <p class="form-note">Enter the numeric Roblox User ID. This will be added to the "others" class.</p>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="addUserBtn">Add User</button>
+                    <button class="btn btn-secondary" id="clearFormBtn">Clear</button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="search-bar">
+                    <input type="text" id="othersSearchInput" class="search-input" placeholder="Search others by username or user ID...">
+                    <button id="clearOthersSearch" class="filter-btn">Clear</button>
+                </div>
+            </div>
+
+            <div class="cards-grid" id="othersCardsGrid">
+                <div class="empty-state" id="othersEmptyState">
+                    <h3>No users in "others" class yet</h3>
+                    <p>Add users using the form above</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="toast" id="toast">
-        <span>✓</span>
-        <span id="toastMessage">URL copied to clipboard!</span>
+        <div class="toast" id="toast">
+            <span>✓</span>
+            <span id="toastMessage">URL copied to clipboard!</span>
+        </div>
     </div>
 
     <script>
         const API_BASE_URL = 'https://gekkefries.pythonanywhere.com';
         const GET_RESULTS_URL = `${API_BASE_URL}/get_results`;
+        const ADD_CUSTOM_USER_URL = `${API_BASE_URL}/add_custom_user`;
         
         let allUsers = [];
         let filteredUsers = [];
         let activeFilter = 'all';
         let searchQuery = '';
         let availableClasses = new Set(['all']);
+        let isInOthersSection = false;
 
+        const mainContent = document.getElementById('mainContent');
+        const othersSection = document.getElementById('othersSection');
         const cardsGrid = document.getElementById('cardsGrid');
+        const othersCardsGrid = document.getElementById('othersCardsGrid');
+        const othersEmptyState = document.getElementById('othersEmptyState');
         const searchInput = document.getElementById('searchInput');
+        const othersSearchInput = document.getElementById('othersSearchInput');
         const clearSearch = document.getElementById('clearSearch');
+        const clearOthersSearch = document.getElementById('clearOthersSearch');
         const filtersContainer = document.querySelector('.filters');
         const loading = document.getElementById('loading');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
+        const backButton = document.getElementById('backButton');
+        const othersButton = document.querySelector('.others-btn');
+        const userIdInput = document.getElementById('userIdInput');
+        const addUserBtn = document.getElementById('addUserBtn');
+        const clearFormBtn = document.getElementById('clearFormBtn');
         
         const totalUsersEl = document.getElementById('totalUsers');
         const onlineUsersEl = document.getElementById('onlineUsers');
@@ -611,15 +811,116 @@
                 applyFilters();
             });
 
+            othersSearchInput.addEventListener('input', (e) => {
+                renderOthersCards();
+            });
+
+            clearOthersSearch.addEventListener('click', () => {
+                othersSearchInput.value = '';
+                renderOthersCards();
+            });
+
             filtersContainer.addEventListener('click', (e) => {
                 if (e.target.classList.contains('filter-btn')) {
                     const filterButtons = filtersContainer.querySelectorAll('.filter-btn');
                     filterButtons.forEach(btn => btn.classList.remove('active'));
                     e.target.classList.add('active');
                     activeFilter = e.target.dataset.class;
-                    applyFilters();
+                    
+                    if (activeFilter === 'others') {
+                        showOthersSection();
+                    } else {
+                        applyFilters();
+                    }
                 }
             });
+
+            backButton.addEventListener('click', () => {
+                showMainSection();
+            });
+
+            addUserBtn.addEventListener('click', addCustomUser);
+            clearFormBtn.addEventListener('click', () => {
+                userIdInput.value = '';
+            });
+
+            userIdInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addCustomUser();
+                }
+            });
+        }
+
+        function showOthersSection() {
+            mainContent.classList.add('hidden');
+            othersSection.classList.add('active');
+            isInOthersSection = true;
+            renderOthersCards();
+        }
+
+        function showMainSection() {
+            mainContent.classList.remove('hidden');
+            othersSection.classList.remove('active');
+            isInOthersSection = false;
+            
+            const othersBtn = document.querySelector('.filter-btn.others-btn');
+            if (othersBtn) {
+                othersBtn.classList.remove('active');
+            }
+            
+            const allBtn = document.querySelector('.filter-btn[data-class="all"]');
+            if (allBtn) {
+                allBtn.classList.add('active');
+            }
+            activeFilter = 'all';
+            applyFilters();
+        }
+
+        async function addCustomUser() {
+            const userId = userIdInput.value.trim();
+            
+            if (!userId) {
+                showToast('Please enter a User ID', 'error');
+                return;
+            }
+            
+            if (!/^\d+$/.test(userId)) {
+                showToast('User ID must contain only numbers', 'error');
+                return;
+            }
+            
+            addUserBtn.disabled = true;
+            addUserBtn.textContent = 'Adding...';
+            
+            try {
+                const response = await fetch(ADD_CUSTOM_USER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_id: userId }),
+                    mode: 'cors'
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                showToast(`User ${userId} added to others!`, 'success');
+                userIdInput.value = '';
+                
+                loadResults();
+                
+            } catch (error) {
+                console.error('Error adding user:', error);
+                showToast(`Error: ${error.message}`, 'error');
+            } finally {
+                addUserBtn.disabled = false;
+                addUserBtn.textContent = 'Add User';
+            }
         }
 
         async function loadResults() {
@@ -642,13 +943,22 @@
                     allUsers = data.users;
                     updateStats(data);
                     updateAvailableClasses();
-                    applyFilters();
+                    
+                    if (!isInOthersSection) {
+                        applyFilters();
+                    } else {
+                        renderOthersCards();
+                    }
                 } else {
-                    showEmptyState('No scan results available yet');
+                    if (!isInOthersSection) {
+                        showEmptyState('No scan results available yet');
+                    }
                 }
             } catch (error) {
                 console.error('Error loading results:', error);
-                showEmptyState('Failed to load scan results. Please try again.');
+                if (!isInOthersSection) {
+                    showEmptyState('Failed to load scan results. Please try again.');
+                }
             } finally {
                 loading.style.display = 'none';
             }
@@ -678,6 +988,10 @@
                 }
             });
             
+            if (!classes.has('others')) {
+                classes.add('others');
+            }
+            
             availableClasses = classes;
             renderFilterButtons();
         }
@@ -685,15 +999,18 @@
         function renderFilterButtons() {
             const filterLabel = filtersContainer.querySelector('.filter-label');
             const allButton = filtersContainer.querySelector('.filter-btn[data-class="all"]');
+            const othersButton = filtersContainer.querySelector('.others-btn');
             
             filtersContainer.innerHTML = '';
             filtersContainer.appendChild(filterLabel);
             
-            const allClasses = Array.from(availableClasses).sort((a, b) => {
-                if (a === 'all') return -1;
-                if (b === 'all') return 1;
-                return a.localeCompare(b);
-            });
+            const allClasses = Array.from(availableClasses)
+                .filter(cls => cls !== 'others')
+                .sort((a, b) => {
+                    if (a === 'all') return -1;
+                    if (b === 'all') return 1;
+                    return a.localeCompare(b);
+                });
             
             allClasses.forEach(className => {
                 const button = document.createElement('button');
@@ -701,12 +1018,23 @@
                 button.dataset.class = className;
                 button.textContent = className === 'all' ? 'All' : formatClassName(className);
                 
-                if (className === activeFilter) {
+                if (className === activeFilter && !isInOthersSection) {
                     button.classList.add('active');
                 }
                 
                 filtersContainer.appendChild(button);
             });
+            
+            const othersBtn = document.createElement('button');
+            othersBtn.className = 'filter-btn others-btn';
+            othersBtn.dataset.class = 'others';
+            othersBtn.textContent = 'Others';
+            
+            if (isInOthersSection) {
+                othersBtn.classList.add('active');
+            }
+            
+            filtersContainer.appendChild(othersBtn);
         }
 
         function formatClassName(className) {
@@ -750,6 +1078,46 @@
             filteredUsers.forEach(user => {
                 const card = createUserCard(user);
                 cardsGrid.appendChild(card);
+            });
+        }
+
+        function renderOthersCards() {
+            othersCardsGrid.innerHTML = '';
+            
+            const othersUsers = allUsers.filter(user => user.class === 'others');
+            
+            if (othersUsers.length === 0) {
+                othersEmptyState.style.display = 'block';
+                return;
+            }
+            
+            othersEmptyState.style.display = 'none';
+            
+            const searchTerm = othersSearchInput.value.toLowerCase();
+            
+            const filteredOthersUsers = othersUsers.filter(user => {
+                if (!searchTerm) return true;
+                
+                const matchesUsername = user.username?.toLowerCase().includes(searchTerm);
+                const matchesUserId = user.user_id?.toLowerCase().includes(searchTerm);
+                const matchesDisplayName = user.additional_info?.display_name?.toLowerCase().includes(searchTerm);
+                
+                return matchesUsername || matchesUserId || matchesDisplayName;
+            });
+            
+            if (filteredOthersUsers.length === 0) {
+                othersCardsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No users match your search</h3>
+                        <p>Try a different search term</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredOthersUsers.forEach(user => {
+                const card = createUserCard(user);
+                othersCardsGrid.appendChild(card);
             });
         }
 
@@ -852,6 +1220,10 @@
         function getClassBadgeColor(className) {
             const lowerClass = className.toLowerCase();
             
+            if (lowerClass === 'others') {
+                return 'background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00); color: white; font-weight: bold;';
+            }
+            
             if (lowerClass.includes('enemy') && lowerClass.includes('clan')) {
                 return 'background: rgba(245, 158, 11, 0.15); color: #f59e0b;';
             }
@@ -902,15 +1274,17 @@
             if (!text) return;
             
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Game URL copied to clipboard!');
+                showToast('Game URL copied to clipboard!', 'success');
             }).catch(err => {
                 console.error('Failed to copy:', err);
-                showToast('Failed to copy URL');
+                showToast('Failed to copy URL', 'error');
             });
         }
 
-        function showToast(message) {
+        function showToast(message, type = 'success') {
             toastMessage.textContent = message;
+            toast.className = 'toast';
+            toast.classList.add(type);
             toast.classList.add('show');
             
             setTimeout(() => {
@@ -921,5 +1295,4 @@
         window.copyToClipboard = copyToClipboard;
     </script>
 </body>
-
 </html>
