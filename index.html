@@ -3,26 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revoltz User Finder</title>
+    <title>Revoltz Dashboard</title>
     <link rel="icon" href="icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #334155;
-            --bg-hover: #475569;
-            --text-primary: #f1f5f9;
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1e293b;
+            --bg-hover: #2d3748;
+            --text-primary: #f8fafc;
             --text-secondary: #cbd5e1;
             --text-muted: #94a3b8;
             --accent-primary: #3b82f6;
             --accent-success: #10b981;
             --accent-warning: #f59e0b;
             --accent-danger: #ef4444;
-            --border-color: #475569;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-            --radius: 12px;
-            --transition: all 0.3s ease;
-            --rainbow-gradient: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff80, #00ffff, #0080ff, #8000ff, #ff0080, #ff0000);
+            --accent-purple: #8b5cf6;
+            --border-color: #374151;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --sidebar-width: 260px;
         }
 
         * {
@@ -37,96 +44,172 @@
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        header {
+        .app-container {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: var(--transition);
         }
 
         .logo-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .logo {
-            width: 48px;
-            height: 48px;
+            width: 36px;
+            height: 36px;
             filter: invert(1) brightness(2);
         }
 
-        .title h1 {
-            font-size: 2rem;
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.25rem;
+            line-height: 1.2;
         }
 
-        .title p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
-        .stats {
+        .nav-section {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-item {
             display: flex;
-            gap: 1.5rem;
-            background: var(--bg-secondary);
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+            cursor: pointer;
         }
 
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
             color: var(--accent-primary);
         }
 
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
         }
 
-        .controls {
-            background: var(--bg-secondary);
-            padding: 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .class-filters {
+            margin-top: 1.5rem;
+        }
+
+        .class-filter {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .class-filter:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .class-filter.active {
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .class-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .class-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .class-count {
+            font-size: 0.75rem;
+            background: var(--bg-card);
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            color: var(--text-muted);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
         }
 
-        .search-bar {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
         }
 
         .search-input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius);
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: var(--transition);
         }
 
@@ -136,300 +219,314 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .search-input::placeholder {
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
             color: var(--text-muted);
         }
 
-        .filters {
+        .view-controls {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .view-btn {
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .view-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .view-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-color);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon.total {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+            color: var(--accent-primary);
+        }
+
+        .stat-icon.online {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            color: var(--accent-success);
+        }
+
+        .stat-icon.offline {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+            color: var(--accent-danger);
+        }
+
+        .stat-icon.others {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
+            color: var(--accent-purple);
+        }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-content p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-trend.positive {
+            color: var(--accent-success);
+        }
+
+        .stat-trend.negative {
+            color: var(--accent-danger);
+        }
+
+        .users-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 1rem;
             align-items: center;
         }
 
-        .filter-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
+        .filter-select {
+            padding: 0.625rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.875rem;
             cursor: pointer;
             transition: var(--transition);
-            white-space: nowrap;
-            position: relative;
         }
 
-        .filter-btn:hover {
-            background: var(--bg-hover);
+        .filter-select:focus {
+            outline: none;
             border-color: var(--accent-primary);
-        }
-
-        .filter-btn.active {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: white;
-        }
-
-        .filter-btn.others-btn {
-            background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff80);
-            background-size: 400% 400%;
-            color: white;
-            border: none;
-            font-weight: 600;
-            animation: rainbowBorder 4s linear infinite;
-            position: relative;
-            z-index: 1;
-        }
-
-        .filter-btn.others-btn::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: var(--rainbow-gradient);
-            background-size: 400% 400%;
-            border-radius: calc(var(--radius) + 2px);
-            z-index: -1;
-            animation: rainbowBorder 4s linear infinite;
-            opacity: 0.7;
-        }
-
-        .filter-btn.others-btn.active::before {
-            opacity: 1;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-
-        @keyframes rainbowBorder {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 400% 50%; }
         }
 
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
-            margin-top: 1rem;
         }
 
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-muted);
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card {
+        .user-card {
             background: var(--bg-card);
-            border-radius: var(--radius);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-md);
             transition: var(--transition);
             border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
         }
 
-        .card:hover {
+        .user-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-primary);
+        }
+
+        .card-status {
+            height: 4px;
+        }
+
+        .card-status.online {
+            background: var(--accent-success);
+        }
+
+        .card-status.offline {
+            background: var(--accent-danger);
         }
 
         .card-header {
             padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: flex-start;
-            gap: 1.5rem;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .avatar-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 120px;
+        .user-avatar {
+            position: relative;
         }
 
-        .avatar {
-            width: 70px;
-            height: 70px;
+        .avatar-img {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--border-color);
         }
 
-        .full-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 2px solid var(--border-color);
-            box-shadow: var(--shadow);
+        .status-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+        }
+
+        .status-indicator.online {
+            background: var(--accent-success);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+        }
+
+        .status-indicator.offline {
+            background: var(--accent-danger);
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
         }
 
         .user-info {
             flex: 1;
-            min-width: 0;
         }
 
-        .username {
-            font-size: 1.25rem;
+        .user-name {
+            font-size: 1.125rem;
             font-weight: 600;
             margin-bottom: 0.25rem;
-            word-break: break-word;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .display-name {
+        .verified-badge {
+            color: var(--accent-success);
+            font-size: 0.875rem;
+        }
+
+        .user-displayname {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             margin-bottom: 0.5rem;
         }
 
         .user-id {
             font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             background: var(--bg-secondary);
             padding: 0.25rem 0.5rem;
-            border-radius: 4px;
+            border-radius: var(--radius-sm);
             display: inline-block;
         }
 
         .card-body {
             padding: 1.5rem;
-            flex: 1;
         }
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-
-        .status-badge.online {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent-success);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .status-badge.offline {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--accent-danger);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .status-dot.online {
-            background: var(--accent-success);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-        }
-
-        .status-dot.offline {
-            background: var(--accent-danger);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
-        }
-
-        .offline-note {
-            background: rgba(239, 68, 68, 0.1);
-            border-left: 3px solid var(--accent-danger);
-            padding: 0.75rem;
-            border-radius: 6px;
-            margin-bottom: 1.5rem;
-        }
-
-        .offline-note p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        .offline-note strong {
-            color: var(--accent-danger);
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-item {
+        .info-row {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
         }
 
         .info-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-            margin-bottom: 0.25rem;
         }
 
         .info-value {
-            font-size: 0.95rem;
+            font-size: 0.875rem;
             font-weight: 500;
         }
 
         .class-badge {
-            display: inline-flex;
-            align-items: center;
             padding: 0.25rem 0.75rem;
             border-radius: 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .description-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-
-        .description-section .info-label {
-            margin-bottom: 0.5rem;
-        }
-
         .card-footer {
-            padding: 1.5rem;
+            padding: 1rem 1.5rem;
             border-top: 1px solid var(--border-color);
             display: flex;
             gap: 0.75rem;
         }
 
-        .btn {
+        .card-btn {
             flex: 1;
-            padding: 0.75rem 1rem;
+            padding: 0.625rem;
             border: none;
-            border-radius: var(--radius);
-            font-size: 0.9rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -439,94 +536,396 @@
             gap: 0.5rem;
         }
 
-        .btn-primary {
+        .card-btn.primary {
             background: var(--accent-primary);
             color: white;
         }
 
-        .btn-primary:hover {
+        .card-btn.primary:hover {
             background: #2563eb;
-            transform: translateY(-2px);
         }
 
-        .btn-secondary {
+        .card-btn.secondary {
             background: var(--bg-secondary);
             color: var(--text-secondary);
             border: 1px solid var(--border-color);
         }
 
-        .btn-secondary:hover {
+        .card-btn.secondary:hover {
             background: var(--bg-hover);
-            transform: translateY(-2px);
+            color: var(--text-primary);
         }
 
-        .btn-back {
+        .users-table {
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+
+        .users-table.active {
+            display: table;
+        }
+
+        .table-header {
+            display: flex;
             background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            font-weight: 600;
             color: var(--text-secondary);
+        }
+
+        .table-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .table-row:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-cell {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .cell-user {
+            flex: 2;
+            min-width: 0;
+        }
+
+        .cell-status {
+            flex: 1;
+        }
+
+        .cell-class {
+            flex: 1;
+        }
+
+        .cell-created {
+            flex: 1;
+        }
+
+        .cell-actions {
+            flex: 1;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .table-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.75rem;
+            border: 2px solid var(--border-color);
+        }
+
+        .table-user-info {
+            min-width: 0;
+        }
+
+        .table-username {
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .table-userid {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .others-section {
+            display: none;
+        }
+
+        .others-section.active {
+            display: block;
+        }
+
+        .add-user-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius);
-            font-size: 0.9rem;
+        }
+
+        .add-user-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .add-user-form {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+        }
+
+        .form-input {
+            padding: 0.875rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-btn {
+            padding: 0.875rem 1.5rem;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
         }
 
-        .btn-back:hover {
-            background: var(--bg-hover);
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
+        .form-btn:hover {
+            background: #2563eb;
         }
 
-        .btn-success {
-            background: var(--accent-success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #0da271;
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
+        .form-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none !important;
+        }
+
+        .scripts-section {
+            display: none;
+        }
+
+        .scripts-section.active {
+            display: block;
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .script-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .script-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-primary);
+        }
+
+        .script-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .script-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            font-size: 1.25rem;
+        }
+
+        .script-info {
+            flex: 1;
+        }
+
+        .script-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .script-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .script-content {
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            margin: 1rem 1.5rem;
+        }
+
+        .script-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            width: 100%;
+            max-width: 800px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-message {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 1rem;
         }
 
         .toast {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: var(--accent-success);
+            background: var(--bg-card);
             color: white;
             padding: 1rem 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            transform: translateY(100px);
+            transform: translateX(100%);
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
             z-index: 1000;
+            border-left: 4px solid var(--accent-success);
         }
 
         .toast.show {
-            transform: translateY(0);
+            transform: translateX(0);
             opacity: 1;
         }
 
         .toast.error {
-            background: var(--accent-danger);
+            border-left-color: var(--accent-danger);
         }
 
         .toast.warning {
-            background: var(--accent-warning);
+            border-left-color: var(--accent-warning);
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
         }
 
         .loading {
@@ -548,216 +947,412 @@
             margin-bottom: 1rem;
         }
 
-        .others-section {
-            display: none;
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
         }
 
-        .others-section.active {
-            display: block;
-        }
-
-        .add-user-form {
-            background: var(--bg-secondary);
-            padding: 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
+        .empty-state i {
+            font-size: 3rem;
             margin-bottom: 1rem;
+            opacity: 0.5;
         }
 
-        .form-label {
-            display: block;
+        .empty-state h3 {
+            font-size: 1.5rem;
             margin-bottom: 0.5rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
         }
 
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: var(--transition);
+        .empty-state p {
+            font-size: 0.95rem;
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .form-note {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-        }
-
-        .main-content {
-            display: block;
-        }
-
-        .main-content.hidden {
+        .sidebar-toggle {
             display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 101;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow-md);
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .scripts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
-            .container {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
                 padding: 1rem;
             }
             
-            header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
+            .sidebar-toggle {
+                display: flex;
             }
             
-            .stats {
-                width: 100%;
+            .top-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                max-width: 100%;
+            }
+            
+            .view-controls {
+                margin-left: 0;
                 justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
             
             .cards-grid {
                 grid-template-columns: 1fr;
             }
             
-            .search-bar {
-                flex-direction: column;
+            .add-user-form {
+                grid-template-columns: 1fr;
             }
             
-            .card-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
+            .scripts-grid {
+                grid-template-columns: 1fr;
             }
             
-            .avatar-section {
-                flex-direction: row;
-                justify-content: center;
-                gap: 1rem;
+            .table-header, .table-row {
+                flex-wrap: wrap;
             }
             
-            .full-avatar {
-                width: 100px;
-                height: 100px;
+            .table-cell {
+                flex: 1 0 50%;
+                padding: 0.75rem;
             }
             
-            .card-footer {
-                flex-direction: column;
+            .cell-actions {
+                justify-content: flex-start;
             }
             
-            .form-actions {
-                flex-direction: column;
+            .modal {
+                max-height: 90vh;
+                margin: 1rem;
             }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="main-content" id="mainContent">
-            <header>
-                <div class="logo-section">
-                    <img src="icon.ico" alt="Logo" class="logo">
-                    <div class="title">
-                        <h1>Revoltz User Finder</h1>
-                        <p>Made By Gekkefres :]</p>
-                    </div>
-                </div>
-                <div class="stats" id="stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalUsers">0</div>
-                        <div class="stat-label">Total Users</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="onlineUsers">0</div>
-                        <div class="stat-label">Online</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="lastScan">-</div>
-                        <div class="stat-label">Last Scan</div>
-                    </div>
-                </div>
-            </header>
-
-            <div class="controls">
-                <div class="search-bar">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search by username or user ID...">
-                    <button id="clearSearch" class="filter-btn">Clear</button>
-                </div>
-                <div class="filters">
-                    <span class="filter-label">Filter by class:</span>
-                    <button class="filter-btn active" data-class="all">All</button>
-                    <button class="filter-btn others-btn" data-class="others">Others</button>
+    <div class="modal-overlay" id="disclaimerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Scripts Disclaimer</div>
+                <button class="modal-close" id="disclaimerClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-message">
+                    scripts for Combat Warriors in retaliation of my second false ban. Normally I don't make scripts for Roblox games but this is an exception.
                 </div>
             </div>
-
-            <div class="cards-grid" id="cardsGrid">
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <p>Loading scan results...</p>
-                </div>
+            <div class="modal-footer">
+                <button class="card-btn primary" id="acknowledgeBtn" style="flex: 1;">
+                    <i class="fas fa-check"></i> I Acknowledge
+                </button>
             </div>
-        </div>
-
-        <div class="others-section" id="othersSection">
-            <button class="btn-back" id="backButton">
-                ← Back to Main
-            </button>
-            
-            <div class="add-user-form">
-                <h2 style="margin-bottom: 1rem; color: var(--text-primary);">Add User to Others</h2>
-                <div class="form-group">
-                    <label class="form-label" for="userIdInput">Roblox User ID</label>
-                    <input type="text" id="userIdInput" class="form-input" placeholder="Enter Roblox User ID (numbers only)" maxlength="20">
-                    <p class="form-note">Enter the numeric Roblox User ID. This will be added to the "others" class.</p>
-                </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary" id="addUserBtn">Add User</button>
-                    <button class="btn btn-secondary" id="clearFormBtn">Clear</button>
-                </div>
-            </div>
-
-            <div class="controls">
-                <div class="search-bar">
-                    <input type="text" id="othersSearchInput" class="search-input" placeholder="Search others by username or user ID...">
-                    <button id="clearOthersSearch" class="filter-btn">Clear</button>
-                </div>
-            </div>
-
-            <div class="cards-grid" id="othersCardsGrid">
-                <div class="empty-state" id="othersEmptyState">
-                    <h3>No users in "others" class yet</h3>
-                    <p>Add users using the form above</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="toast" id="toast">
-            <span>✓</span>
-            <span id="toastMessage">URL copied to clipboard!</span>
         </div>
     </div>
 
+    <div class="app-container">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="sidebar" id="sidebar">
+            <div class="logo-section">
+                <img src="icon.ico" alt="Logo" class="logo">
+                <div class="logo-text">
+                    <h1>Revoltz Dashboard</h1>
+                    <p>User Tracking System</p>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Navigation</div>
+                <div class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-section="others">
+                    <i class="fas fa-users"></i>
+                    <span>Others</span>
+                    <span class="class-count" id="othersCount">0</span>
+                </div>
+                <div class="nav-item" data-section="add-user">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add User</span>
+                </div>
+                
+                <div class="nav-title">Scripts</div>
+                <div class="nav-item" data-section="scripts">
+                    <i class="fas fa-code"></i>
+                    <span>Collection</span>
+                </div>
+                
+                <div class="nav-title class-filters-title">Classes</div>
+                <div class="class-filters" id="classFilters">
+                    <div class="class-filter active" data-class="all">
+                        <div class="class-name">
+                            <div class="class-dot" style="background: var(--accent-primary)"></div>
+                            <span>All Users</span>
+                        </div>
+                        <span class="class-count" id="allCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content" id="mainContent">
+            <div class="dashboard-section" id="dashboardSection">
+                <div class="top-bar">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search users by name, ID, or class...">
+                    </div>
+                    
+                    <div class="view-controls">
+                        <button class="view-btn active" data-view="grid">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="view-btn" data-view="table">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-content">
+                                <h3 id="totalUsers">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                            <div class="stat-icon total">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Updated just now</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-content">
+                                <h3 id="onlineUsers">0</h3>
+                                <p>Online Now</p>
+                            </div>
+                            <div class="stat-icon online">
+                                <i class="fas fa-signal"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-circle"></i>
+                            <span>Live tracking active</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-content">
+                                <h3 id="offlineUsers">0</h3>
+                                <p>Offline</p>
+                            </div>
+                            <div class="stat-icon offline">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend">
+                            <span>Last scan: <span id="lastScanTime">-</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-content">
+                                <h3 id="uniqueClasses">0</h3>
+                                <p>Classes</p>
+                            </div>
+                            <div class="stat-icon others">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend">
+                            <span>Filter by class in sidebar</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="users-section">
+                    <div class="section-header">
+                        <div class="section-title" id="sectionTitle">All Users</div>
+                        <div class="section-actions">
+                            <select class="filter-select" id="statusFilter">
+                                <option value="all">All Status</option>
+                                <option value="online">Online Only</option>
+                                <option value="offline">Offline Only</option>
+                            </select>
+                            <select class="filter-select" id="sortFilter">
+                                <option value="name">Sort by Name</option>
+                                <option value="class">Sort by Class</option>
+                                <option value="status">Sort by Status</option>
+                                <option value="newest">Newest First</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="cards-grid" id="cardsGrid">
+                        <div class="loading" id="loading">
+                            <div class="spinner"></div>
+                            <p>Loading scan results...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="users-table" id="usersTable">
+                        <div class="table-header">
+                            <div class="table-cell cell-user">User</div>
+                            <div class="table-cell cell-status">Status</div>
+                            <div class="table-cell cell-class">Class</div>
+                            <div class="table-cell cell-created">Created</div>
+                            <div class="table-cell cell-actions">Actions</div>
+                        </div>
+                        <div id="tableBody"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="others-section" id="othersSection">
+                <div class="section-header">
+                    <div class="section-title">Others Class</div>
+                    <div class="section-actions">
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="othersSearchInput" class="search-input" placeholder="Search others...">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cards-grid" id="othersCardsGrid">
+                    <div class="empty-state" id="othersEmptyState">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>No users in "others" class yet</h3>
+                        <p>Add users using the form in the Add User section</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="others-section" id="addUserSection">
+                <div class="add-user-card">
+                    <div class="add-user-title">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Add User to Others Class</span>
+                    </div>
+                    
+                    <div class="add-user-form">
+                        <input type="text" id="userIdInput" class="form-input" placeholder="Enter Roblox User ID (numbers only)" maxlength="20">
+                        <button class="form-btn" id="addUserBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>Add User</span>
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-muted);">
+                        <p><i class="fas fa-info-circle"></i> Enter the numeric Roblox User ID. This user will be added to the "others" class for tracking.</p>
+                    </div>
+                </div>
+                
+                <div class="section-header">
+                    <div class="section-title">Recently Added Users</div>
+                </div>
+                
+                <div class="cards-grid" id="recentUsersGrid"></div>
+            </div>
+            
+            <div class="scripts-section" id="scriptsSection">
+                <div class="section-header">
+                    <div class="section-title">Script Collection</div>
+                </div>
+                
+                <div class="scripts-grid" id="scriptsGrid">
+                    <div class="empty-state" id="scriptsEmptyState">
+                        <i class="fas fa-code"></i>
+                        <h3>No scripts found</h3>
+                        <p>Add .txt files to the "scripts" folder to see them here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle toast-icon"></i>
+            <div>
+                <div id="toastMessage">URL copied to clipboard!</div>
+                <div style="font-size: 0.75rem; opacity: 0.8;" id="toastSubMessage"></div>
+            </div>
+        </div>
+    </div>
+    
     <script>
         const API_BASE_URL = 'https://gekkefries.pythonanywhere.com';
         const GET_RESULTS_URL = `${API_BASE_URL}/get_results`;
@@ -765,161 +1360,190 @@
         
         let allUsers = [];
         let filteredUsers = [];
-        let activeFilter = 'all';
+        let activeClassFilter = 'all';
+        let activeSection = 'dashboard';
         let searchQuery = '';
         let availableClasses = new Set(['all']);
-        let isInOthersSection = false;
+        let currentView = 'grid';
+        let statusFilter = 'all';
+        let sortFilter = 'name';
 
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
         const mainContent = document.getElementById('mainContent');
+        const navItems = document.querySelectorAll('.nav-item');
+        const classFilters = document.getElementById('classFilters');
+        const dashboardSection = document.getElementById('dashboardSection');
         const othersSection = document.getElementById('othersSection');
+        const addUserSection = document.getElementById('addUserSection');
+        const scriptsSection = document.getElementById('scriptsSection');
         const cardsGrid = document.getElementById('cardsGrid');
         const othersCardsGrid = document.getElementById('othersCardsGrid');
-        const othersEmptyState = document.getElementById('othersEmptyState');
+        const recentUsersGrid = document.getElementById('recentUsersGrid');
+        const scriptsGrid = document.getElementById('scriptsGrid');
+        const tableBody = document.getElementById('tableBody');
+        const usersTable = document.getElementById('usersTable');
         const searchInput = document.getElementById('searchInput');
         const othersSearchInput = document.getElementById('othersSearchInput');
-        const clearSearch = document.getElementById('clearSearch');
-        const clearOthersSearch = document.getElementById('clearOthersSearch');
-        const filtersContainer = document.querySelector('.filters');
         const loading = document.getElementById('loading');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
-        const backButton = document.getElementById('backButton');
+        const toastSubMessage = document.getElementById('toastSubMessage');
         const userIdInput = document.getElementById('userIdInput');
         const addUserBtn = document.getElementById('addUserBtn');
-        const clearFormBtn = document.getElementById('clearFormBtn');
+        const viewButtons = document.querySelectorAll('.view-btn');
+        const statusFilterSelect = document.getElementById('statusFilter');
+        const sortFilterSelect = document.getElementById('sortFilter');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const disclaimerModal = document.getElementById('disclaimerModal');
+        const disclaimerClose = document.getElementById('disclaimerClose');
+        const acknowledgeBtn = document.getElementById('acknowledgeBtn');
         
         const totalUsersEl = document.getElementById('totalUsers');
         const onlineUsersEl = document.getElementById('onlineUsers');
-        const lastScanEl = document.getElementById('lastScan');
+        const offlineUsersEl = document.getElementById('offlineUsers');
+        const uniqueClassesEl = document.getElementById('uniqueClasses');
+        const lastScanTimeEl = document.getElementById('lastScanTime');
+        const othersCountEl = document.getElementById('othersCount');
+        const allCountEl = document.getElementById('allCount');
 
         document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('disclaimerAcknowledged')) {
+                disclaimerModal.classList.add('active');
+            }
             loadResults();
             setupEventListeners();
             setInterval(loadResults, 30000);
         });
 
         function setupEventListeners() {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const section = item.dataset.section;
+                    setActiveSection(section);
+                    
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+            
+            classFilters.addEventListener('click', (e) => {
+                const classFilter = e.target.closest('.class-filter');
+                if (classFilter) {
+                    const filterClass = classFilter.dataset.class;
+                    setActiveClassFilter(filterClass);
+                    
+                    document.querySelectorAll('.class-filter').forEach(filter => {
+                        filter.classList.remove('active');
+                    });
+                    classFilter.classList.add('active');
+                }
+            });
+            
             searchInput.addEventListener('input', (e) => {
                 searchQuery = e.target.value.toLowerCase();
                 applyFilters();
             });
-
-            clearSearch.addEventListener('click', () => {
-                searchInput.value = '';
-                searchQuery = '';
-                applyFilters();
-            });
-
+            
             othersSearchInput.addEventListener('input', (e) => {
                 renderOthersCards();
             });
-
-            clearOthersSearch.addEventListener('click', () => {
-                othersSearchInput.value = '';
-                renderOthersCards();
-            });
-
-            filtersContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('filter-btn')) {
-                    const filterButtons = filtersContainer.querySelectorAll('.filter-btn');
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                    activeFilter = e.target.dataset.class;
+            
+            viewButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const view = button.dataset.view;
+                    setCurrentView(view);
                     
-                    if (activeFilter === 'others') {
-                        showOthersSection();
-                    } else {
-                        applyFilters();
-                    }
-                }
+                    viewButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
             });
-
-            backButton.addEventListener('click', () => {
-                showMainSection();
+            
+            statusFilterSelect.addEventListener('change', (e) => {
+                statusFilter = e.target.value;
+                applyFilters();
             });
-
+            
+            sortFilterSelect.addEventListener('change', (e) => {
+                sortFilter = e.target.value;
+                applyFilters();
+            });
+            
             addUserBtn.addEventListener('click', addCustomUser);
-            clearFormBtn.addEventListener('click', () => {
-                userIdInput.value = '';
-            });
-
             userIdInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     addCustomUser();
                 }
             });
+            
+            disclaimerClose.addEventListener('click', () => {
+                disclaimerModal.classList.remove('active');
+            });
+            
+            acknowledgeBtn.addEventListener('click', () => {
+                localStorage.setItem('disclaimerAcknowledged', 'true');
+                disclaimerModal.classList.remove('active');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(e.target) && 
+                    !sidebarToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
         }
 
-        function showOthersSection() {
-            mainContent.classList.add('hidden');
-            othersSection.classList.add('active');
-            isInOthersSection = true;
-            renderOthersCards();
+        function setActiveSection(section) {
+            activeSection = section;
+            
+            dashboardSection.style.display = 'none';
+            othersSection.style.display = 'none';
+            addUserSection.style.display = 'none';
+            scriptsSection.style.display = 'none';
+            
+            if (section === 'dashboard') {
+                dashboardSection.style.display = 'block';
+                sectionTitle.textContent = activeClassFilter === 'all' ? 'All Users' : `${formatClassName(activeClassFilter)} Users`;
+            } else if (section === 'others') {
+                othersSection.style.display = 'block';
+                othersSection.classList.add('active');
+                renderOthersCards();
+            } else if (section === 'add-user') {
+                addUserSection.style.display = 'block';
+                addUserSection.classList.add('active');
+                renderRecentUsers();
+            } else if (section === 'scripts') {
+                scriptsSection.style.display = 'block';
+                scriptsSection.classList.add('active');
+                loadScripts();
+            }
         }
 
-        function showMainSection() {
-            mainContent.classList.remove('hidden');
-            othersSection.classList.remove('active');
-            isInOthersSection = false;
-            
-            const othersBtn = document.querySelector('.filter-btn.others-btn');
-            if (othersBtn) {
-                othersBtn.classList.remove('active');
-            }
-            
-            const allBtn = document.querySelector('.filter-btn[data-class="all"]');
-            if (allBtn) {
-                allBtn.classList.add('active');
-            }
-            activeFilter = 'all';
+        function setActiveClassFilter(className) {
+            activeClassFilter = className;
+            sectionTitle.textContent = className === 'all' ? 'All Users' : `${formatClassName(className)} Users`;
             applyFilters();
         }
 
-        async function addCustomUser() {
-            const userId = userIdInput.value.trim();
+        function setCurrentView(view) {
+            currentView = view;
             
-            if (!userId) {
-                showToast('Please enter a User ID', 'error');
-                return;
+            if (view === 'grid') {
+                cardsGrid.style.display = 'grid';
+                usersTable.style.display = 'none';
+            } else {
+                cardsGrid.style.display = 'none';
+                usersTable.style.display = 'table';
+                usersTable.classList.add('active');
             }
             
-            if (!/^\d+$/.test(userId)) {
-                showToast('User ID must contain only numbers', 'error');
-                return;
-            }
-            
-            addUserBtn.disabled = true;
-            addUserBtn.textContent = 'Adding...';
-            
-            try {
-                const response = await fetch(ADD_CUSTOM_USER_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ user_id: userId }),
-                    mode: 'cors'
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                showToast(`User ${userId} added to others!`, 'success');
-                userIdInput.value = '';
-                
-                loadResults();
-                
-            } catch (error) {
-                console.error('Error adding user:', error);
-                showToast(`Error: ${error.message}`, 'error');
-            } finally {
-                addUserBtn.disabled = false;
-                addUserBtn.textContent = 'Add User';
-            }
+            applyFilters();
         }
 
         async function loadResults() {
@@ -927,55 +1551,64 @@
                 loading.style.display = 'flex';
                 const response = await fetch(GET_RESULTS_URL, {
                     mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 
                 if (data.users && data.users.length > 0) {
                     allUsers = data.users;
                     updateStats(data);
                     updateAvailableClasses();
+                    applyFilters();
                     
-                    if (!isInOthersSection) {
-                        applyFilters();
-                    } else {
-                        renderOthersCards();
-                    }
+                    if (activeSection === 'others') renderOthersCards();
+                    if (activeSection === 'add-user') renderRecentUsers();
                 } else {
-                    if (!isInOthersSection) {
-                        showEmptyState('No scan results available yet');
-                    }
+                    showEmptyState('No scan results available yet');
                 }
             } catch (error) {
                 console.error('Error loading results:', error);
-                if (!isInOthersSection) {
-                    showEmptyState('Failed to load scan results. Please try again.');
-                }
+                showEmptyState('Failed to load scan results. Please try again.');
+                showToast('Failed to load data from server', 'error', 'Check your connection and try again');
             } finally {
                 loading.style.display = 'none';
             }
         }
 
         function updateStats(data) {
-            const nonOthersUsers = allUsers.filter(user => user.class !== 'others');
-            totalUsersEl.textContent = nonOthersUsers.length;
+            const mainUsers = allUsers.filter(user => user.class !== 'others');
+            const othersUsers = allUsers.filter(user => user.class === 'others');
             
-            const onlineCount = nonOthersUsers.filter(user => user.server_found).length;
+            totalUsersEl.textContent = mainUsers.length;
+            allCountEl.textContent = mainUsers.length;
+            
+            const onlineCount = mainUsers.filter(user => user.server_found).length;
+            const offlineCount = mainUsers.length - onlineCount;
+            
             onlineUsersEl.textContent = onlineCount;
+            offlineUsersEl.textContent = offlineCount;
+            othersCountEl.textContent = othersUsers.length;
+            
+            const uniqueClasses = new Set(mainUsers.map(user => user.class).filter(c => c && c !== 'others'));
+            uniqueClassesEl.textContent = uniqueClasses.size;
             
             if (data.metadata?.scan_completed) {
                 const scanTime = new Date(data.metadata.scan_completed);
-                lastScanEl.textContent = scanTime.toLocaleTimeString([], { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                });
+                const now = new Date();
+                const diffMinutes = Math.floor((now - scanTime) / (1000 * 60));
+                
+                if (diffMinutes < 1) {
+                    lastScanTimeEl.textContent = 'Just now';
+                } else if (diffMinutes < 60) {
+                    lastScanTimeEl.textContent = `${diffMinutes}m ago`;
+                } else {
+                    lastScanTimeEl.textContent = scanTime.toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                }
             }
         }
 
@@ -989,71 +1622,60 @@
             });
             
             availableClasses = classes;
-            renderFilterButtons();
+            renderClassFilters();
         }
 
-        function renderFilterButtons() {
-            const filterLabel = filtersContainer.querySelector('.filter-label');
+        function renderClassFilters() {
+            const allFilter = classFilters.querySelector('.class-filter[data-class="all"]');
+            classFilters.innerHTML = '';
+            classFilters.appendChild(allFilter);
             
-            filtersContainer.innerHTML = '';
-            filtersContainer.appendChild(filterLabel);
+            const otherClasses = Array.from(availableClasses)
+                .filter(className => className !== 'all')
+                .sort((a, b) => a.localeCompare(b));
             
-            const allClasses = Array.from(availableClasses)
-                .sort((a, b) => {
-                    if (a === 'all') return -1;
-                    if (b === 'all') return 1;
-                    return a.localeCompare(b);
-                });
-            
-            allClasses.forEach(className => {
-                const button = document.createElement('button');
-                button.className = 'filter-btn';
-                button.dataset.class = className;
-                button.textContent = className === 'all' ? 'All' : formatClassName(className);
+            otherClasses.forEach(className => {
+                const userCount = allUsers.filter(user => user.class === className).length;
+                const color = getClassColor(className);
                 
-                if (className === activeFilter && !isInOthersSection) {
-                    button.classList.add('active');
+                const filter = document.createElement('div');
+                filter.className = 'class-filter';
+                filter.dataset.class = className;
+                filter.innerHTML = `
+                    <div class="class-name">
+                        <div class="class-dot" style="background: ${color}"></div>
+                        <span>${formatClassName(className)}</span>
+                    </div>
+                    <span class="class-count">${userCount}</span>
+                `;
+                
+                if (className === activeClassFilter) {
+                    filter.classList.add('active');
                 }
                 
-                filtersContainer.appendChild(button);
+                classFilters.appendChild(filter);
             });
-            
-            const othersBtn = document.createElement('button');
-            othersBtn.className = 'filter-btn others-btn';
-            othersBtn.dataset.class = 'others';
-            othersBtn.textContent = 'Others';
-            
-            if (isInOthersSection) {
-                othersBtn.classList.add('active');
-            }
-            
-            filtersContainer.appendChild(othersBtn);
-        }
-
-        function formatClassName(className) {
-            return className
-                .split('_')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                .join(' ');
         }
 
         function applyFilters() {
             filteredUsers = allUsers.filter(user => {
-                if (user.class === 'others') {
+                if (user.class === 'others') return false;
+                
+                if (activeClassFilter !== 'all' && user.class !== activeClassFilter) {
                     return false;
                 }
                 
-                if (activeFilter !== 'all' && user.class !== activeFilter) {
-                    return false;
-                }
+                if (statusFilter === 'online' && !user.server_found) return false;
+                if (statusFilter === 'offline' && user.server_found) return false;
                 
                 if (searchQuery) {
                     const searchLower = searchQuery.toLowerCase();
                     const matchesUsername = user.username?.toLowerCase().includes(searchLower);
                     const matchesUserId = user.user_id?.toLowerCase().includes(searchLower);
                     const matchesDisplayName = user.additional_info?.display_name?.toLowerCase().includes(searchLower);
+                    const matchesClass = user.class?.toLowerCase().includes(searchLower);
                     
-                    if (!matchesUsername && !matchesUserId && !matchesDisplayName) {
+                    if (!matchesUsername && !matchesUserId && !matchesDisplayName && !matchesClass) {
                         return false;
                     }
                 }
@@ -1061,7 +1683,34 @@
                 return true;
             });
             
-            renderCards();
+            sortUsers();
+            
+            if (currentView === 'grid') {
+                renderCards();
+            } else {
+                renderTable();
+            }
+        }
+
+        function sortUsers() {
+            filteredUsers.sort((a, b) => {
+                switch(sortFilter) {
+                    case 'name':
+                        return a.username?.localeCompare(b.username);
+                    case 'class':
+                        return (a.class || '').localeCompare(b.class || '');
+                    case 'status':
+                        if (a.server_found && !b.server_found) return -1;
+                        if (!a.server_found && b.server_found) return 1;
+                        return 0;
+                    case 'newest':
+                        const dateA = new Date(a.additional_info?.created_date || 0);
+                        const dateB = new Date(b.additional_info?.created_date || 0);
+                        return dateB - dateA;
+                    default:
+                        return 0;
+                }
+            });
         }
 
         function renderCards() {
@@ -1078,18 +1727,32 @@
             });
         }
 
+        function renderTable() {
+            tableBody.innerHTML = '';
+            
+            if (filteredUsers.length === 0) {
+                usersTable.style.display = 'none';
+                cardsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No users match your filters</h3>
+                        <p>Try adjusting your filters or search query</p>
+                    </div>
+                `;
+                cardsGrid.style.display = 'grid';
+                return;
+            }
+            
+            filteredUsers.forEach(user => {
+                const row = createTableRow(user);
+                tableBody.appendChild(row);
+            });
+        }
+
         function renderOthersCards() {
             othersCardsGrid.innerHTML = '';
             
             const othersUsers = allUsers.filter(user => user.class === 'others');
-            
-            if (othersUsers.length === 0) {
-                othersEmptyState.style.display = 'block';
-                return;
-            }
-            
-            othersEmptyState.style.display = 'none';
-            
             const searchTerm = othersSearchInput.value.toLowerCase();
             
             const filteredOthersUsers = othersUsers.filter(user => {
@@ -1105,8 +1768,9 @@
             if (filteredOthersUsers.length === 0) {
                 othersCardsGrid.innerHTML = `
                     <div class="empty-state">
-                        <h3>No users match your search</h3>
-                        <p>Try a different search term</p>
+                        <i class="fas fa-user-friends"></i>
+                        <h3>${searchTerm ? 'No users match your search' : 'No users in "others" class yet'}</h3>
+                        <p>${searchTerm ? 'Try a different search term' : 'Add users using the Add User section'}</p>
                     </div>
                 `;
                 return;
@@ -1118,95 +1782,114 @@
             });
         }
 
-        function createUserCard(user) {
+        function renderRecentUsers() {
+            recentUsersGrid.innerHTML = '';
+            
+            const othersUsers = allUsers
+                .filter(user => user.class === 'others')
+                .slice(0, 5);
+            
+            if (othersUsers.length === 0) {
+                recentUsersGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h3>No recently added users</h3>
+                        <p>Add a user using the form above</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            othersUsers.forEach(user => {
+                const card = createUserCard(user);
+                recentUsersGrid.appendChild(card);
+            });
+        }
+
+        async function loadScripts() {
+            scriptsGrid.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading scripts...</p>
+                </div>
+            `;
+            
+            try {
+                const scripts = await fetchScriptList();
+                
+                if (scripts.length === 0) {
+                    scriptsGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-code"></i>
+                            <h3>No scripts found</h3>
+                            <p>Add .txt files to the "scripts" folder to see them here</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                scriptsGrid.innerHTML = '';
+                
+                for (const script of scripts) {
+                    const scriptCard = await createScriptCard(script);
+                    scriptsGrid.appendChild(scriptCard);
+                }
+                
+            } catch (error) {
+                console.error('Error loading scripts:', error);
+                scriptsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Failed to load scripts</h3>
+                        <p>Make sure you have a "scripts" folder with .txt files</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function fetchScriptList() {
+            const scriptFiles = [
+                { name: 'Test Script', filename: 'test.txt', description: 'Test script for Combat Warriors' }
+            ];
+            
+            return scriptFiles;
+        }
+
+        async function createScriptCard(script) {
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = 'script-card';
             
-            const isOnline = user.server_found;
-            const headshotUrl = user.avatar_urls?.headshot || 'https://via.placeholder.com/150';
-            const fullBodyUrl = user.avatar_urls?.full_body || 'https://via.placeholder.com/720';
-            const displayName = user.additional_info?.display_name || '';
-            const createdDate = user.additional_info?.created_date ? 
-                new Date(user.additional_info.created_date).toLocaleDateString() : 'Unknown';
-            const hasVerifiedBadge = user.additional_info?.has_verified_badge || false;
-            const scanMethod = user.scan_method || 'not_found';
+            let scriptContent = '';
+            try {
+                const response = await fetch(`scripts/${script.filename}`);
+                if (response.ok) {
+                    scriptContent = await response.text();
+                } else {
+                    scriptContent = `// Script content not found\n// Place your script in scripts/${script.filename}`;
+                }
+            } catch (error) {
+                scriptContent = `// Error loading script\n// Make sure scripts/${script.filename} exists`;
+            }
             
-            const offlineExplanation = getOfflineExplanation(scanMethod);
-            
-            const userClass = user.class || '';
-            const badgeColor = getClassBadgeColor(userClass);
-            
-            const gameUrl = user.direct_join_url || user.web_url || '';
+            const escapedContent = escapeHtml(scriptContent);
             
             card.innerHTML = `
-                <div class="card-header">
-                    <div class="avatar-section">
-                        <img src="${headshotUrl}" alt="${user.username}" class="avatar" onerror="this.src='https://via.placeholder.com/150'">
-                        <img src="${fullBodyUrl}" alt="Full avatar" class="full-avatar" onerror="this.style.display='none'">
+                <div class="script-header">
+                    <div class="script-icon">
+                        <i class="fas fa-code"></i>
                     </div>
-                    <div class="user-info">
-                        <div class="username">
-                            ${user.username}
-                            ${hasVerifiedBadge ? '<span style="color: #10b981; margin-left: 4px;">✓</span>' : ''}
-                        </div>
-                        ${displayName ? `<div class="display-name">${displayName}</div>` : ''}
-                        <div class="user-id">${user.user_id}</div>
+                    <div class="script-info">
+                        <div class="script-name">${script.name}</div>
+                        <div class="script-description">${script.description}</div>
                     </div>
                 </div>
-                
-                <div class="card-body">
-                    <div class="status-badge ${isOnline ? 'online' : 'offline'}">
-                        <div class="status-dot ${isOnline ? 'online' : 'offline'}"></div>
-                        ${isOnline ? 'In Game' : 'Not In Game'}
-                    </div>
-                    
-                    ${!isOnline ? `
-                        <div class="offline-note">
-                            <p><strong>Note:</strong> ${offlineExplanation}</p>
-                        </div>
-                    ` : ''}
-                    
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Class</span>
-                            <span class="class-badge" style="${badgeColor}">${user.class}</span>
-                        </div>
-                        
-                        <div class="info-item">
-                            <span class="info-label">Scan Method</span>
-                            <span class="info-value">${formatScanMethod(scanMethod)}</span>
-                        </div>
-                        
-                        <div class="info-item">
-                            <span class="info-label">Account Created</span>
-                            <span class="info-value">${createdDate}</span>
-                        </div>
-                        
-                        <div class="info-item">
-                            <span class="info-label">Banned</span>
-                            <span class="info-value">${user.additional_info?.is_banned ? 'Yes' : 'No'}</span>
-                        </div>
-                    </div>
-                    
-                    ${user.additional_info?.description ? `
-                        <div class="description-section">
-                            <div class="info-item">
-                                <span class="info-label">Description</span>
-                                <span class="info-value" style="font-size: 0.9rem; opacity: 0.9; line-height: 1.4;">
-                                    ${user.additional_info.description.substring(0, 120)}
-                                    ${user.additional_info.description.length > 120 ? '...' : ''}
-                                </span>
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-                
-                <div class="card-footer">
-                    <button class="btn btn-secondary" onclick="copyToClipboard('${gameUrl}')" ${!gameUrl ? 'disabled' : ''}>
-                        Copy URL
+                <div class="script-content">${escapedContent.substring(0, 1000)}${scriptContent.length > 1000 ? '...' : ''}</div>
+                <div class="script-footer">
+                    <button class="card-btn secondary" onclick="copyToClipboard('${escapedContent.replace(/'/g, "\\'")}', '${script.name} Script')">
+                        <i class="fas fa-copy"></i> Copy Script
                     </button>
-                    <button class="btn btn-primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl ? 'disabled' : ''}>
-                        Join Game
+                    <button class="card-btn primary" onclick="viewFullScript('${script.name}', '${escapedContent.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-eye"></i> View Full
                     </button>
                 </div>
             `;
@@ -1214,74 +1897,227 @@
             return card;
         }
 
-        function getClassBadgeColor(className) {
-            const lowerClass = className.toLowerCase();
+        function createUserCard(user) {
+            const isOnline = user.server_found;
+            const headshotUrl = user.avatar_urls?.headshot || 'https://via.placeholder.com/150';
+            const displayName = user.additional_info?.display_name || '';
+            const createdDate = user.additional_info?.created_date ? 
+                new Date(user.additional_info.created_date).toLocaleDateString() : 'Unknown';
+            const hasVerifiedBadge = user.additional_info?.has_verified_badge || false;
+            const scanMethod = user.scan_method || 'not_found';
+            const userClass = user.class || '';
+            const badgeColor = getClassColor(userClass);
+            const gameUrl = user.direct_join_url || user.web_url || '';
             
-            if (lowerClass === 'others') {
-                return 'background: rgba(59, 130, 246, 0.15); color: #3b82f6;';
-            }
-            
-            if (lowerClass.includes('enemy') && lowerClass.includes('clan')) {
-                return 'background: rgba(245, 158, 11, 0.15); color: #f59e0b;';
-            }
-            
-            if (lowerClass.includes('enemy') || lowerClass.includes('l7c')) {
-                return 'background: rgba(239, 68, 68, 0.15); color: #ef4444;';
-            }
-            
-            if (lowerClass.includes('ally') || lowerClass.includes('allied')) {
-                return 'background: rgba(16, 185, 129, 0.15); color: #10b981;';
-            }
-            
-            return 'background: rgba(59, 130, 246, 0.15); color: #3b82f6;';
-        }
-
-        function getOfflineExplanation(scanMethod) {
-            switch(scanMethod) {
-                case 'presence_api':
-                    return "User is not currently in the game according to Roblox's presence API.";
-                case 'server_scan':
-                    return "User was not found in any server scans. They may have just joined.";
-                case 'not_found':
-                    return "User was not found via presence API or server scan. They might not be in the game at all, or it may take up to 20 minutes for new player tokens to appear in Roblox's server listings.";
-                default:
-                    return "User was not found in the game. This could mean they're offline, in a different game, or their player token hasn't been updated yet.";
-            }
-        }
-
-        function formatScanMethod(method) {
-            const methodMap = {
-                'presence_api': 'Presence API',
-                'server_scan': 'Server Scan',
-                'not_found': 'Not Found'
-            };
-            return methodMap[method] || method;
-        }
-
-        function showEmptyState(message) {
-            cardsGrid.innerHTML = `
-                <div class="empty-state">
-                    <h3>${message}</h3>
-                    <p>Try adjusting your filters or wait for the next scan</p>
+            const card = document.createElement('div');
+            card.className = 'user-card';
+            card.innerHTML = `
+                <div class="card-status ${isOnline ? 'online' : 'offline'}"></div>
+                <div class="card-header">
+                    <div class="user-avatar">
+                        <img src="${headshotUrl}" alt="${user.username}" class="avatar-img" onerror="this.src='https://via.placeholder.com/150'">
+                        <div class="status-indicator ${isOnline ? 'online' : 'offline'}"></div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">
+                            ${user.username}
+                            ${hasVerifiedBadge ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                        </div>
+                        ${displayName ? `<div class="user-displayname">${displayName}</div>` : ''}
+                        <div class="user-id">${user.user_id}</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">
+                            <span style="color: ${isOnline ? 'var(--accent-success)' : 'var(--accent-danger)'};">
+                                ${isOnline ? 'In Game' : 'Not In Game'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Class</div>
+                        <div class="info-value">
+                            <span class="class-badge" style="background: ${badgeColor}20; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">
+                                ${userClass}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Account Created</div>
+                        <div class="info-value">${createdDate}</div>
+                    </div>
+                    ${!isOnline ? `
+                        <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                            <i class="fas fa-info-circle"></i> ${getOfflineExplanation(scanMethod)}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="card-footer">
+                    <button class="card-btn secondary" onclick="copyToClipboard('${gameUrl}', '${user.username}')" ${!gameUrl ? 'disabled' : ''}>
+                        <i class="fas fa-copy"></i> Copy URL
+                    </button>
+                    <button class="card-btn primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl ? 'disabled' : ''}>
+                        <i class="fas fa-gamepad"></i> Join Game
+                    </button>
                 </div>
             `;
+            
+            return card;
         }
 
-        function copyToClipboard(text) {
+        function createTableRow(user) {
+            const isOnline = user.server_found;
+            const headshotUrl = user.avatar_urls?.headshot || 'https://via.placeholder.com/150';
+            const displayName = user.additional_info?.display_name || '';
+            const createdDate = user.additional_info?.created_date ? 
+                new Date(user.additional_info.created_date).toLocaleDateString() : 'Unknown';
+            const userClass = user.class || '';
+            const badgeColor = getClassColor(userClass);
+            const gameUrl = user.direct_join_url || user.web_url || '';
+            
+            const row = document.createElement('div');
+            row.className = 'table-row';
+            row.innerHTML = `
+                <div class="table-cell cell-user">
+                    <img src="${headshotUrl}" alt="${user.username}" class="table-avatar" onerror="this.src='https://via.placeholder.com/150'">
+                    <div class="table-user-info">
+                        <div class="table-username">${user.username}</div>
+                        <div class="table-userid">${user.user_id}</div>
+                    </div>
+                </div>
+                <div class="table-cell cell-status">
+                    <span style="color: ${isOnline ? 'var(--accent-success)' : 'var(--accent-danger)'};">
+                        <i class="fas fa-circle" style="font-size: 0.75rem;"></i> ${isOnline ? 'In Game' : 'Offline'}
+                    </span>
+                </div>
+                <div class="table-cell cell-class">
+                    <span class="class-badge" style="background: ${badgeColor}20; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">
+                        ${userClass}
+                    </span>
+                </div>
+                <div class="table-cell cell-created">${createdDate}</div>
+                <div class="table-cell cell-actions">
+                    <button class="card-btn secondary" onclick="copyToClipboard('${gameUrl}', '${user.username}')" ${!gameUrl ? 'disabled' : ''} style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="card-btn primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl ? 'disabled' : ''} style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-gamepad"></i>
+                    </button>
+                </div>
+            `;
+            
+            return row;
+        }
+
+        async function addCustomUser() {
+            const userId = userIdInput.value.trim();
+            
+            if (!userId) {
+                showToast('Please enter a User ID', 'error', 'User ID cannot be empty');
+                return;
+            }
+            
+            if (!/^\d+$/.test(userId)) {
+                showToast('Invalid User ID format', 'error', 'User ID must contain only numbers');
+                return;
+            }
+            
+            addUserBtn.disabled = true;
+            addUserBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Adding...</span>';
+            
+            try {
+                const response = await fetch(ADD_CUSTOM_USER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId }),
+                    mode: 'cors'
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                showToast(`User ${userId} added successfully!`, 'success', 'User has been added to "others" class');
+                userIdInput.value = '';
+                
+                loadResults();
+                
+            } catch (error) {
+                console.error('Error adding user:', error);
+                showToast(`Failed to add user`, 'error', error.message);
+            } finally {
+                addUserBtn.disabled = false;
+                addUserBtn.innerHTML = '<i class="fas fa-plus"></i><span>Add User</span>';
+            }
+        }
+
+        function copyToClipboard(text, username = '') {
             if (!text) return;
             
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Game URL copied to clipboard!', 'success');
+                showToast('Copied to clipboard!', 'success', username ? `${username} copied` : '');
             }).catch(err => {
                 console.error('Failed to copy:', err);
-                showToast('Failed to copy URL', 'error');
+                showToast('Failed to copy', 'error', 'Please try again');
             });
         }
 
-        function showToast(message, type = 'success') {
+        function viewFullScript(name, content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay active';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 2rem;';
+            
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <div class="modal-title">${name}</div>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="font-family: 'Monaco', 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5; white-space: pre-wrap; background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm); overflow-y: auto; max-height: 60vh;">${content}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="card-btn secondary" onclick="copyToClipboard('${content.replace(/'/g, "\\'")}', '${name} Script')" style="flex: 1;">
+                            <i class="fas fa-copy"></i> Copy Script
+                        </button>
+                        <button class="card-btn primary" onclick="this.closest('.modal-overlay').remove()" style="flex: 1;">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.remove();
+                }
+            });
+        }
+
+        function showToast(message, type = 'success', subMessage = '') {
             toastMessage.textContent = message;
-            toast.className = 'toast';
-            toast.classList.add(type);
+            toastSubMessage.textContent = subMessage;
+            
+            const icon = toast.querySelector('.toast-icon');
+            icon.className = 'fas toast-icon';
+            
+            if (type === 'success') {
+                icon.classList.add('fa-check-circle');
+                toast.className = 'toast';
+            } else if (type === 'error') {
+                icon.classList.add('fa-exclamation-circle');
+                toast.className = 'toast error';
+            } else if (type === 'warning') {
+                icon.classList.add('fa-exclamation-triangle');
+                toast.className = 'toast warning';
+            }
+            
             toast.classList.add('show');
             
             setTimeout(() => {
@@ -1289,7 +2125,69 @@
             }, 3000);
         }
 
+        function showEmptyState(message) {
+            cardsGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-users"></i>
+                    <h3>${message}</h3>
+                    <p>Try adjusting your filters or wait for the next scan</p>
+                </div>
+            `;
+        }
+
+        function formatClassName(className) {
+            return className
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        }
+
+        function getClassColor(className) {
+            if (className === 'others') return 'var(--accent-purple)';
+            
+            const lowerClass = className.toLowerCase();
+            if (lowerClass.includes('enemy')) return 'var(--accent-danger)';
+            if (lowerClass.includes('ally')) return 'var(--accent-success)';
+            if (lowerClass.includes('clan')) return 'var(--accent-warning)';
+            
+            const colors = [
+                'var(--accent-primary)', 
+                '#8b5cf6', 
+                '#06b6d4', 
+                '#84cc16', 
+                '#f97316', 
+                '#ec4899'
+            ];
+            
+            let hash = 0;
+            for (let i = 0; i < className.length; i++) {
+                hash = className.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        function getOfflineExplanation(scanMethod) {
+            switch(scanMethod) {
+                case 'presence_api':
+                    return "Not in game (via Presence API)";
+                case 'server_scan':
+                    return "Not found in server scans";
+                case 'not_found':
+                    return "May have just joined or token not updated";
+                default:
+                    return "User not currently in game";
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         window.copyToClipboard = copyToClipboard;
+        window.viewFullScript = viewFullScript;
     </script>
 </body>
 </html>
