@@ -30,6 +30,9 @@
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             --gradient-primary: linear-gradient(135deg, #3b82f6, #8b5cf6);
             --sidebar-width: 260px;
+            --disabled-bg: #4b5563;
+            --disabled-text: #9ca3af;
+            --disabled-border: #6b7280;
         }
 
         * {
@@ -545,6 +548,18 @@
             background: #2563eb;
         }
 
+        .card-btn.primary:disabled {
+            background: var(--disabled-bg);
+            color: var(--disabled-text);
+            cursor: not-allowed;
+            border: 1px solid var(--disabled-border);
+            opacity: 0.6;
+        }
+
+        .card-btn.primary:disabled:hover {
+            background: var(--disabled-bg);
+        }
+
         .card-btn.secondary {
             background: var(--bg-secondary);
             color: var(--text-secondary);
@@ -554,6 +569,18 @@
         .card-btn.secondary:hover {
             background: var(--bg-hover);
             color: var(--text-primary);
+        }
+
+        .card-btn.secondary:disabled {
+            background: var(--disabled-bg);
+            color: var(--disabled-text);
+            cursor: not-allowed;
+            border: 1px solid var(--disabled-border);
+            opacity: 0.6;
+        }
+
+        .card-btn.secondary:disabled:hover {
+            background: var(--disabled-bg);
         }
 
         .users-table {
@@ -1955,10 +1982,10 @@
                     ` : ''}
                 </div>
                 <div class="card-footer">
-                    <button class="card-btn secondary" onclick="copyToClipboard('${gameUrl}', '${user.username}')" ${!gameUrl ? 'disabled' : ''}>
+                    <button class="card-btn secondary" onclick="copyToClipboard('${gameUrl}', '${user.username}')" ${!gameUrl || !isOnline ? 'disabled' : ''}>
                         <i class="fas fa-copy"></i> Copy URL
                     </button>
-                    <button class="card-btn primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl ? 'disabled' : ''}>
+                    <button class="card-btn primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl || !isOnline ? 'disabled' : ''}>
                         <i class="fas fa-gamepad"></i> Join Game
                     </button>
                 </div>
@@ -1999,10 +2026,10 @@
                 </div>
                 <div class="table-cell cell-created">${createdDate}</div>
                 <div class="table-cell cell-actions">
-                    <button class="card-btn secondary" onclick="copyToClipboard('${gameUrl}', '${user.username}')" ${!gameUrl ? 'disabled' : ''} style="padding: 0.5rem; font-size: 0.75rem;">
+                    <button class="card-btn secondary" onclick="copyToClipboard('${gameUrl}', '${user.username}')" ${!gameUrl || !isOnline ? 'disabled' : ''} style="padding: 0.5rem; font-size: 0.75rem;">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button class="card-btn primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl ? 'disabled' : ''} style="padding: 0.5rem; font-size: 0.75rem;">
+                    <button class="card-btn primary" onclick="window.open('${gameUrl}', '_blank')" ${!gameUrl || !isOnline ? 'disabled' : ''} style="padding: 0.5rem; font-size: 0.75rem;">
                         <i class="fas fa-gamepad"></i>
                     </button>
                 </div>
